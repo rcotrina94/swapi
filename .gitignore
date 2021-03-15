@@ -1,0 +1,15 @@
+# Carpeta configuraciones IDE's
+.vscode
+
+# Carpeta Dependencias JS
+node_modules
+
+# Carpeta de framework Serverless
+.serverless
+
+# Carpeta Build/Transpilación
+.webpack
+.build
+
+# Carpeta DB Local
+.dynamodb

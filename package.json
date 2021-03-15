@@ -1,0 +1,44 @@
+{
+    "name": "swapi",
+    "version": "0.1.0",
+    "description": "Reto técnico: Integración SWAPI con NodeJS. Despliegue sobre AWS:Lambda + AWS:DynamoDB",
+    "main": "handler.ts",
+    "scripts": {
+        "test": "npm test"
+    },
+    "author": {
+        "name": "Richard Cotrina",
+        "email": "rcotrina@pytel.pe",
+        "url": "https://rc94.xyz"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rcotrina/swapi.git"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.72",
+        "@types/hapi__hapi": "^20.0.5",
+        "@types/hapi__joi": "^17.1.6",
+        "@types/jest": "^26.0.14",
+        "@types/node-fetch": "^2.5.8",
+        "@types/uuid": "^8.3.0",
+        "@typescript-eslint/eslint-plugin": "^4.16.1",
+        "@typescript-eslint/parser": "^4.16.1",
+        "aws-sdk": "^2.858.0",
+        "dts-gen": "^0.6.0",
+        "eslint": "^7.21.0",
+        "serverless-dynamodb-local": "^0.2.39",
+        "serverless-offline": "^6.8.0",
+        "serverless-plugin-typescript": "^1.1.9",
+        "typescript": "^4.2.3"
+    },
+    "dependencies": {
+        "@hapi/hapi": "^20.1.0",
+        "@supercharge/hapi-aws-lambda": "^2.0.0",
+        "node-fetch": "^2.6.1",
+        "openapi-types": "^7.2.3",
+        "uuid": "^8.3.2"
+    }
+}

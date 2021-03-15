@@ -1,0 +1,88 @@
+service: swapi
+frameworkVersion: "2"
+# Modo de resolución de variables actualizado
+# https://www.serverless.com/framework/docs/deprecations/#NEW_VARIABLES_RESOLVER
+variablesResolutionMode: 20210219
+
+provider:
+  # Nuevo algoritmo de hasheado para la resolución del versionado del Lambda,
+  # https://www.serverless.com/framework/docs/deprecations/#LAMBDA_HASHING_VERSION_V2
+  lambdaHashingVersion: 20201221
+  name: aws
+  region: 'us-east-1'
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  environment:
+    stage: ${self:provider.stage}
+    # Nombre de la tabla para nuevo modelo en DynamoDB
+    CUSTOM_TABLE: ${self:service}-series-${opt:stage, self:provider.stage}
+  iam:
+    role:
+      statements:
+        # Permisos necesarios para obtener y escribir datos en DynamoDB
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+          # TODO: Especificar recurso.
+          Resource: "*"
+  apiGateway:
+    # La nomenclatura para API Gateway será cambiada a ${service}-${stage}.
+    # https://www.serverless.com/framework/docs/deprecations/#AWS_API_GATEWAY_NAME_STARTING_WITH_SERVICE
+    shouldStartNameWithService: true
+
+package:
+  # Empaquetar funciones individualmente
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - tests/**
+    - .env
+
+custom:
+  dynamodb:
+    stages:
+      # Permitir instancias de DynamoDB en dev, (y test local offline)
+      - dev
+      - test
+    start:
+      inMemory: true
+      migrate: true
+
+plugins:
+  # Plugin para usar TypeScript
+  - serverless-plugin-typescript
+  # Plugin para instancias locales de DynamoDB
+  - serverless-dynamodb-local
+  # Plugin para simular APIGW y LAMBDA localmente
+  - serverless-offline
+
+resources:
+  Resources:
+    # Definición de recurso DynamoDB:Tabla modelo nuevo
+    CustomTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.CUSTOM_TABLE}
+
+functions:
+  api:
+    handler: handler.proxy
+    events:
+      # Se define un sólo evento proxy.
+      # Para más complejidad: especificar.
+      - http: ANY /{proxy+}
+
+# TODO: Definir outputs.
+# TODO: Desagregar en YMLs
